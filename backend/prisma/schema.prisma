@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionType {
+  income
+  expense
+}
+
+model Category {
+  id        String          @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  color     String
+  type      TransactionType
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  transactions Transaction[]
+  // saber as transações que uma categoria tem, Ex: salário
+  //garantir que não exista duas categorias com o mesmo nome e tipo
+
+  @@unique([name, type])
+}
+
+model Transaction {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  amount      Float
+  date        DateTime
+  type        TransactionType
+  userId      String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  //RELATIONSHIPS
+  categoryId String   @db.ObjectId
+  category   Category @relation(fields: [categoryId], references: [id])
+  //tem o tipo Category, e faz relação com o campo categoryId e tem como referencia o id
+  // guarda a informação do id da tabela de categoria
+
+  @@index([userId, date])
+  @@index([userId, date, categoryId])
+  // ajuda a fazer a busca de transações por usuário e data espécifica
+  // como se fosse o índice de um livro
+}
