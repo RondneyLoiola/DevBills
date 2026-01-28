@@ -4,7 +4,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx tsx watch src/server.ts"
+    "dev": "npx tsx watch src/server.ts",
+    "build": "npx tsc",
+    "start": "node dist/server.js",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "Rondney Loiola",
@@ -19,12 +22,15 @@
     "firebase-admin": "^13.5.0",
     "mongodb": "^6.20.0",
     "zod": "^3",
-    "zod-to-json-schema": "^3.24.6"
+    "zod-to-json-schema": "^3.24.6",
+    "typescript": "^5.9.3",
+    "tsx": "^4.20.6"
   },
   "devDependencies": {
     "@types/node": "^24.7.2",
-    "prisma": "^6.17.1",
-    "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "prisma": "^6.17.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
