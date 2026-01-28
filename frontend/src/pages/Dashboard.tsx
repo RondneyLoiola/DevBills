@@ -1,6 +1,6 @@
-import { ArrowUp,  Calendar, TrendingUp, Wallet } from "lucide-react"
+import { ArrowUp, Calendar, TrendingUp, Wallet } from "lucide-react"
 import { useEffect, useState } from "react"
-import {Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import Card from "../components/Card"
 import MonthYearSelect from "../components/MonthYearSelect"
 import { getTransactionsMonthly, getTransactionsSummary } from "../services/transactionService"
@@ -14,17 +14,10 @@ const initialSummary: TransactionSummary = {
     expensesByCategory: []
 }
 
-interface ChartLabel {
-    categoryName: string;
-    percent: number;
-}
-
 const Dashboard = () => {
     const currentDate = new Date()
     const [year, setYear] = useState<number>(currentDate.getFullYear())
     const [month, setMonth] = useState<number>(currentDate.getMonth() + 1) 
-    // o getFullYear é um função do Date() que retorna o ano atual
-    // o getMonth é um função do Date() que retorna o mês atual
     const [summary, setSummary] = useState<TransactionSummary>(initialSummary)
     const [monthlyItemsData, setMonthlyItemsData] = useState<MonthlyItem[]>([])
 
@@ -32,7 +25,6 @@ const Dashboard = () => {
         async function loadTransactionsSummary(){
             try {
                 const response = await getTransactionsSummary(month, year)
-                
                 setSummary(response)
             } catch (error) {
                 console.error('Erro ao buscar transações:', error)
@@ -46,8 +38,6 @@ const Dashboard = () => {
         async function loadTransactionsMonthly(){
             try {
                 const response = await getTransactionsMonthly(month, year)
-                //console.log(response)
-                
                 setMonthlyItemsData(response.history)
             } catch (error) {
                 console.error('Erro ao buscar transações:', error)
@@ -57,8 +47,9 @@ const Dashboard = () => {
         loadTransactionsMonthly()
     }, [month, year])
 
-    const renderPieChartLabel = ({categoryName, percent}: ChartLabel): string => {
-        return `${categoryName}: ${(percent * 100).toFixed(1)}%`
+    // ✅ CORREÇÃO: Remova a tipagem ChartLabel e use 'any' ou o tipo correto
+    const renderPieChartLabel = (entry: any): string => {
+        return `${entry.categoryName}: ${(entry.percent * 100).toFixed(1)}%`
     }
 
     const formatToolTipValue = (value: number | string): string => {
@@ -70,7 +61,6 @@ const Dashboard = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                 <h1 className="text-2xl font-bold mb-4 md:mb-0">Dashboard</h1>
                 <MonthYearSelect month={month} year={year} onMonthChange={setMonth} onYearChange={setYear}/>
-                {/* onMonthChange e onYearChange são funções que recebem um parâmetro e atualizam o estado do mês e do ano */}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -133,7 +123,7 @@ const Dashboard = () => {
                     </div>
                     ) : (
                         <div className="flex items-center justify-center h-64 text-gray-500">
-                            <p>Nenhuma despesa registrada nesse perído</p>
+                            <p>Nenhuma despesa registrada nesse período</p>
                         </div>
                     )}
                 </Card>
@@ -148,7 +138,7 @@ const Dashboard = () => {
                                     data={monthlyItemsData}
                                     margin={{left: 1}}
                                     >
-                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255 255, 0.1"/>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)"/>
                                     <XAxis dataKey="name" stroke="#94a3b8" tick={{style: {textTransform: 'capitalize'}, fontSize: 14}}/>
                                     <YAxis width="auto" tickFormatter={formatToolTipValue} stroke="#94a3b8" tick={{style: {fontSize: 12}}}/>
                                     <Tooltip 
@@ -166,7 +156,7 @@ const Dashboard = () => {
                             </ResponsiveContainer>
                         ): (
                             <div className="flex items-center justify-center h-64 text-gray-500">
-                                Nenhuma despesa registrada nesse perído
+                                Nenhuma despesa registrada nesse período
                             </div>
                         )}
                     </div>
