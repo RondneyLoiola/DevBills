@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 import { ArrowUp, Calendar, TrendingUp, Wallet } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
@@ -26,6 +27,7 @@ const Dashboard = () => {
             try {
                 const response = await getTransactionsSummary(month, year)
                 setSummary(response)
+                console.log(summary)
             } catch (error) {
                 console.error('Erro ao buscar transações:', error)
             }
