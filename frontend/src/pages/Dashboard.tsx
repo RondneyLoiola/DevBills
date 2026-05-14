@@ -27,7 +27,6 @@ const Dashboard = () => {
             try {
                 const response = await getTransactionsSummary(month, year)
                 setSummary(response)
-                console.log(summary)
             } catch (error) {
                 console.error('Erro ao buscar transações:', error)
             }
